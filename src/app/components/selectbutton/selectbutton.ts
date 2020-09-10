@@ -1,7 +1,8 @@
-import {NgModule,Component,Input,Output,EventEmitter,forwardRef,ChangeDetectorRef,ContentChild,TemplateRef} from '@angular/core';
+import {NgModule,Component,Input,Output,EventEmitter,forwardRef,ChangeDetectorRef,ContentChild,TemplateRef,SimpleChanges,OnChanges,ChangeDetectionStrategy, ViewEncapsulation} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {SelectItem} from '../common/selectitem';
-import {ObjectUtils} from '../utils/objectutils';
+import {SelectItem} from 'primeng/api';
+import {ObjectUtils} from 'primeng/utils';
+import {RippleModule} from 'primeng/ripple';
 import {NG_VALUE_ACCESSOR, ControlValueAccessor} from '@angular/forms';
 
 export const SELECTBUTTON_VALUE_ACCESSOR: any = {
@@ -13,14 +14,14 @@ export const SELECTBUTTON_VALUE_ACCESSOR: any = {
 @Component({
     selector: 'p-selectButton',
     template: `
-        <div [ngClass]="'ui-selectbutton ui-buttonset ui-widget ui-corner-all ui-buttonset-' + (options ? options.length : 0)" [ngStyle]="style" [class]="styleClass">
-            <div *ngFor="let option of options; let i = index" #btn class="ui-button ui-widget ui-state-default ui-button-text-only {{option.styleClass}}"
-                [ngClass]="{'ui-state-active':isSelected(option), 'ui-state-disabled': disabled || option.disabled, 'ui-state-focus': btn == focusedItem, 
-                'ui-button-text-icon-left': (option.icon != null), 'ui-button-icon-only': (option.icon && !option.label)}" (click)="onItemClick($event,option,i)" (keydown.enter)="onItemClick($event,option,i)"
-                [attr.title]="option.title" [attr.aria-label]="option.label" (focus)="onFocus($event)" (blur)="onBlur($event)" [attr.tabindex]="tabindex">
+        <div [ngClass]="'p-selectbutton p-buttonset p-component'" [ngStyle]="style" [class]="styleClass"  role="group">
+            <div *ngFor="let option of options; let i = index" #btn class="p-button p-component" [class]="option.styleClass" role="button" [attr.aria-pressed]="isSelected(option)"
+                [ngClass]="{'p-highlight':isSelected(option), 'p-disabled': disabled || option.disabled, 
+                'p-button-icon-only': (option.icon && !option.label)}" (click)="onItemClick($event,option,i)" (keydown.enter)="onItemClick($event,option,i)"
+                [attr.title]="option.title" [attr.aria-label]="option.label" (blur)="onBlur()" [attr.tabindex]="disabled ? null : tabindex" [attr.aria-labelledby]="ariaLabelledBy" pRipple>
                 <ng-container *ngIf="!itemTemplate else customcontent">
-                    <span [ngClass]="['ui-clickable', 'ui-button-icon-left']" [class]="option.icon" *ngIf="option.icon"></span>
-                    <span class="ui-button-text ui-clickable">{{option.label||'ui-btn'}}</span>
+                    <span [ngClass]="'p-button-icon p-button-icon-left'" [class]="option.icon" *ngIf="option.icon"></span>
+                    <span class="p-button-label">{{option.label}}</span>
                 </ng-container>
                 <ng-template #customcontent>
                     <ng-container *ngTemplateOutlet="itemTemplate; context: {$implicit: option, index: i}"></ng-container>
@@ -28,9 +29,12 @@ export const SELECTBUTTON_VALUE_ACCESSOR: any = {
             </div>
         </div>
     `,
-    providers: [SELECTBUTTON_VALUE_ACCESSOR]
+    providers: [SELECTBUTTON_VALUE_ACCESSOR],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None,
+    styleUrls: ['./selectbutton.css', '../button/button.css']
 })
-export class SelectButton implements ControlValueAccessor {
+export class SelectButton implements ControlValueAccessor, OnChanges {
 
     @Input() tabindex: number = 0;
 
@@ -39,6 +43,8 @@ export class SelectButton implements ControlValueAccessor {
     @Input() style: any;
         
     @Input() styleClass: string;
+
+    @Input() ariaLabelledBy: string;
 
     @Input() disabled: boolean;
 
@@ -50,27 +56,30 @@ export class SelectButton implements ControlValueAccessor {
 
     @Output() onChange: EventEmitter<any> = new EventEmitter();
 
-    @ContentChild(TemplateRef, { static: false }) itemTemplate;
+    @ContentChild(TemplateRef) itemTemplate;
     
     value: any;
-    
-    focusedItem: HTMLDivElement;
-    
+        
     _options: any[];
     
     onModelChange: Function = () => {};
     
     onModelTouched: Function = () => {};
     
-    constructor(private cd: ChangeDetectorRef) {}
+    constructor(public cd: ChangeDetectorRef) {}
     
     @Input() get options(): any[] {
         return this._options;
     }
 
     set options(val: any[]) {
-        let opts = this.optionLabel ? ObjectUtils.generateSelectItems(val, this.optionLabel) : val;
-        this._options = opts;
+        //NoOp
+    }
+
+    ngOnChanges(simpleChange: SimpleChanges) {
+        if (simpleChange.options) {
+            this._options = this.optionLabel ? ObjectUtils.generateSelectItems(simpleChange.options.currentValue, this.optionLabel) : simpleChange.options.currentValue;
+        }
     }
     
     writeValue(value: any) : void {
@@ -88,16 +97,17 @@ export class SelectButton implements ControlValueAccessor {
     
     setDisabledState(val: boolean): void {
         this.disabled = val;
+        this.cd.markForCheck();
     }
     
     onItemClick(event, option: SelectItem, index: number) {
-        if(this.disabled || option.disabled) {
+        if (this.disabled || option.disabled) {
             return;
         }
                 
-        if(this.multiple) {
+        if (this.multiple) {
             let itemIndex = this.findItemIndex(option);
-            if(itemIndex != -1)
+            if (itemIndex != -1)
                 this.value = this.value.filter((val,i) => i!=itemIndex);
             else
                 this.value = [...this.value||[], option.value];
@@ -120,17 +130,12 @@ export class SelectButton implements ControlValueAccessor {
         });
     }
     
-    onFocus(event: Event) {
-        this.focusedItem = <HTMLDivElement> event.target;
-    }
-    
-    onBlur(event) {
-        this.focusedItem = null;
+    onBlur() {
         this.onModelTouched();
     }
     
     isSelected(option: SelectItem) {
-        if(this.multiple)
+        if (this.multiple)
             return this.findItemIndex(option) != -1;
         else
             return ObjectUtils.equals(option.value, this.value, this.dataKey);
@@ -138,9 +143,9 @@ export class SelectButton implements ControlValueAccessor {
     
     findItemIndex(option: SelectItem) {
         let index = -1;
-        if(this.value) {
+        if (this.value) {
             for(let i = 0; i < this.value.length; i++) {
-                if(this.value[i] == option.value) {
+                if (this.value[i] == option.value) {
                     index = i;
                     break;
                 }
@@ -151,7 +156,7 @@ export class SelectButton implements ControlValueAccessor {
 }
 
 @NgModule({
-    imports: [CommonModule],
+    imports: [CommonModule,RippleModule],
     exports: [SelectButton],
     declarations: [SelectButton]
 })

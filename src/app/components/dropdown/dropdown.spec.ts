@@ -1,14 +1,15 @@
-import {ScrollingModule} from '@angular/cdk/scrolling';
-import { TestBed, ComponentFixture, tick, fakeAsync, async } from '@angular/core/testing';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { TestBed, ComponentFixture, async } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import {Dropdown, DropdownItem} from './dropdown';
+import { Dropdown, DropdownItem} from './dropdown';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule } from '../../../../node_modules/@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { Component } from '@angular/core';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
 	template: `
-		<p-dropdown [(ngModel)]="selectedCity" [options]="groupedCars" placeholder="Select a Car" [group]="true">
+		<p-dropdown [(ngModel)]="selectedCity" [options]="groupedCars" [editable]="editable" [disabled]="disabled" [placeholder]="placeholder" [group]="true">
 			<ng-template let-group pTemplate="group">
 				<span>{{group.label}}</span>
 			</ng-template>
@@ -19,6 +20,7 @@ import { Component } from '@angular/core';
 })
 class TestDropdownComponent {
 	selectedCity: any;
+
 	groupedCars = [
 		{
 			label: 'Germany', value: 'germany.png', 
@@ -46,6 +48,12 @@ class TestDropdownComponent {
 		}
 	];
 
+	disabled: boolean;
+
+	editable: boolean;
+
+	placeholder: string = "Select a Car";
+
 	setValue() {
 		this.selectedCity = {name: 'New York', code: 'NY'};
 	}
@@ -63,7 +71,8 @@ describe('Dropdown', () => {
         imports: [
           NoopAnimationsModule,
           FormsModule,
-          ScrollingModule
+		  ScrollingModule,
+		  TooltipModule
         ],
         declarations: [
           Dropdown,
@@ -80,14 +89,15 @@ describe('Dropdown', () => {
     });
 
 	it('should disabled', () => {
-		dropdown.disabled=true;
-		dropdown.editable=true;
+		fixture.componentInstance.disabled=true;
+		fixture.componentInstance.editable=true;
 		fixture.detectChanges();
 
-		const containerEl = fixture.debugElement.query(By.css('.ui-dropdown')).nativeElement;
-		const hiddenEl = fixture.debugElement.queryAll(By.css('.ui-helper-hidden-accessible'))[0].children[0].nativeElement;
+		dropdown.cd.detectChanges();
+		const containerEl = fixture.debugElement.query(By.css('.p-dropdown')).nativeElement;
+		const hiddenEl = fixture.debugElement.queryAll(By.css('.p-hidden-accessible'))[0].children[0].nativeElement;
 		const editableInputEl = fixture.debugElement.queryAll(By.css('input'))[1].nativeElement;
-		expect(containerEl.className).toContain('ui-state-disabled')
+		expect(containerEl.className).toContain('p-disabled')
 		expect(hiddenEl.disabled).toEqual(true);
 		expect(editableInputEl.disabled).toEqual(true);
 	});
@@ -96,18 +106,18 @@ describe('Dropdown', () => {
 		dropdown.dropdownIcon = "Primeng";
 		fixture.detectChanges();
 
-		const dropdownSpanEl = fixture.debugElement.query(By.css('.ui-dropdown-trigger-icon.ui-clickable')).nativeElement;
+		const dropdownSpanEl = fixture.debugElement.query(By.css('.p-dropdown-trigger-icon')).nativeElement;
 		expect(dropdownSpanEl.className).toContain("Primeng")
 	});
 
 	it('should change style and styleClass', () => {
 		dropdown.styleClass = "Primeng";
-		dropdown.style = {'primeng':'rocks'}
+		dropdown.style = {'height':'300px'}
 		fixture.detectChanges();
 
-		const containerEl = fixture.debugElement.query(By.css('.ui-dropdown'));
+		const containerEl = fixture.debugElement.query(By.css('.p-dropdown'));
 		expect(containerEl.nativeElement.className).toContain("Primeng");
-		expect(containerEl.nativeElement.style.primeng).toEqual("rocks");
+		expect(containerEl.nativeElement.style.height).toEqual("300px");
 	});
 
 	it('should change panelStyleClass', () => {
@@ -125,7 +135,7 @@ describe('Dropdown', () => {
 		container.click();
 		fixture.detectChanges();
 
-		const dropdownPanel = fixture.debugElement.query(By.css('.ui-dropdown-panel'));
+		const dropdownPanel = fixture.debugElement.query(By.css('.p-dropdown-panel'));
 		expect(dropdownPanel).toBeTruthy();
 		expect(dropdownPanel.nativeElement.className).toContain("Primeng");
 	});
@@ -140,12 +150,12 @@ describe('Dropdown', () => {
 		];
 		fixture.detectChanges();
 		
-		const container = fixture.debugElement.query(By.css('.ui-dropdown')).nativeElement;
+		const container = fixture.debugElement.query(By.css('.p-dropdown')).nativeElement;
 		container.click();
 		fixture.detectChanges();
 
-		const dropdownPanel = fixture.debugElement.query(By.css('.ui-dropdown-panel'));
-		expect(container.className).toContain('ui-dropdown-open');
+		const dropdownPanel = fixture.debugElement.query(By.css('.p-dropdown-panel'));
+		expect(container.className).toContain('p-dropdown-open');
 		expect(dropdownPanel).toBeTruthy();
 	});
 
@@ -159,15 +169,15 @@ describe('Dropdown', () => {
 		];
 		fixture.detectChanges();
 		
-		const container = fixture.debugElement.query(By.css('.ui-dropdown')).nativeElement;
+		const container = fixture.debugElement.query(By.css('.p-dropdown')).nativeElement;
 		container.click();
 		fixture.detectChanges();
 
 		container.click();
 		fixture.detectChanges();
 
-		const dropdownPanel = fixture.debugElement.query(By.css('.ui-dropdown-panel'));
-		expect(container.className).not.toContain('ui-dropdown-open');
+		const dropdownPanel = fixture.debugElement.query(By.css('.p-dropdown-panel'));
+		expect(container.className).not.toContain('p-dropdown-open');
 		expect(dropdownPanel).toBeFalsy();
 	});
 
@@ -181,15 +191,14 @@ describe('Dropdown', () => {
 		];
 		fixture.detectChanges();
 		
-		const container = fixture.debugElement.query(By.css('.ui-dropdown')).nativeElement;
+		const container = fixture.debugElement.query(By.css('.p-dropdown')).nativeElement;
 		container.click();
 		fixture.detectChanges();
 
-		const items = fixture.debugElement.query(By.css('.ui-dropdown-items'));
+		const items = fixture.debugElement.query(By.css('.p-dropdown-items'));
 		items.children[2].children[0].nativeElement.click();
 		fixture.detectChanges();
 		expect(dropdown.selectedOption.name).toEqual('London');
-		expect(items.children[2].children[0].nativeElement.className).toContain('ui-state-highlight')
 	});
 
 	it('should item clear', () => {
@@ -202,22 +211,21 @@ describe('Dropdown', () => {
 			{label:'Paris', value:{id:5, name: 'Paris', code: 'PRS'}}
 		];
 		dropdown.showClear=true;
-		dropdown.autoWidth = true;
 		fixture.detectChanges();
 		
-		const container = fixture.debugElement.query(By.css('.ui-dropdown')).nativeElement;
+		const container = fixture.debugElement.query(By.css('.p-dropdown')).nativeElement;
 		container.click();
 		fixture.detectChanges();
 
-		const items = fixture.debugElement.query(By.css('.ui-dropdown-items'));
+		const items = fixture.debugElement.query(By.css('.p-dropdown-items'));
 		items.children[2].children[0].nativeElement.click();
 		fixture.detectChanges();
-		const itemCloseIcon = fixture.debugElement.query(By.css('.ui-dropdown-clear-icon'));
+		const itemCloseIcon = fixture.debugElement.query(By.css('.p-dropdown-clear-icon'));
 		itemCloseIcon.nativeElement.click();
 		fixture.detectChanges();
 
 		expect(dropdown.selectedOption).toEqual({ label: 'Select City', value: null });
-		expect(items.children[2].nativeElement.className).not.toContain('ui-state-highlight')
+		expect(items.children[2].nativeElement.className).not.toContain('p-highlight')
 	});
 
 	it('should filtered', async(() => {
@@ -234,22 +242,22 @@ describe('Dropdown', () => {
 		];
 		fixture.detectChanges();
 		
-		const container = fixture.debugElement.query(By.css('.ui-dropdown')).nativeElement;
+		const container = fixture.debugElement.query(By.css('.p-dropdown')).nativeElement;
 		container.click();
 		fixture.detectChanges();
 
-		let items=fixture.debugElement.query(By.css('.ui-dropdown-items'));
+		let items=fixture.debugElement.query(By.css('.p-dropdown-items'));
 		expect(items.nativeElement.children.length).toEqual(3);
-		const filterDiv = fixture.debugElement.query(By.css('.ui-dropdown-filter-container'));
+		const filterDiv = fixture.debugElement.query(By.css('.p-dropdown-filter-container'));
 		expect(filterDiv).toBeTruthy();
-		const filterInputEl = fixture.debugElement.query(By.css('.ui-dropdown-filter'));
+		const filterInputEl = fixture.debugElement.query(By.css('.p-dropdown-filter'));
 		filterInputEl.nativeElement.value = "n";
 		filterInputEl.nativeElement.dispatchEvent(new Event('keydown'));
 		const event = {'target':{'value':'n'}};
 		dropdown.onFilter(event)
 		fixture.detectChanges();
 
-		items=fixture.debugElement.query(By.css('.ui-dropdown-items'));
+		items=fixture.debugElement.query(By.css('.p-dropdown-items'));
 		expect(items.nativeElement.children.length).toEqual(3);
 	}));
 
@@ -264,20 +272,20 @@ describe('Dropdown', () => {
 		dropdown.filter = true;
 		fixture.detectChanges();
 		
-		const container = fixture.debugElement.query(By.css('.ui-dropdown')).nativeElement;
+		const container = fixture.debugElement.query(By.css('.p-dropdown')).nativeElement;
 		container.click();
 		fixture.detectChanges();
 
-		const filterDiv = fixture.debugElement.query(By.css('.ui-dropdown-filter-container'));
+		const filterDiv = fixture.debugElement.query(By.css('.p-dropdown-filter-container'));
 		expect(filterDiv).toBeTruthy();
-		const filterInputEl = fixture.debugElement.query(By.css('.ui-dropdown-filter'));
+		const filterInputEl = fixture.debugElement.query(By.css('.p-dropdown-filter'));
 		filterInputEl.nativeElement.value = "primeng";
 		filterInputEl.nativeElement.dispatchEvent(new Event('keydown'));
 		const event = {'target':{'value':'primeng'}};
 		dropdown.onFilter(event)
 		fixture.detectChanges();
 
-		const items = fixture.debugElement.query(By.css('.ui-dropdown-items'));
+		const items = fixture.debugElement.query(By.css('.p-dropdown-items'));
 		const emptyMesage = items.children[0]; 
 		expect(items.nativeElement.children.length).toEqual(1);
 		expect(emptyMesage).toBeTruthy();
@@ -305,7 +313,7 @@ describe('Dropdown', () => {
 		inputEl.dispatchEvent(new Event("blur"));
 		fixture.detectChanges();
 
-		const dropdownPanel = fixture.debugElement.query(By.css('.ui-dropdown-panel'));
+		const dropdownPanel = fixture.debugElement.query(By.css('.p-dropdown-panel'));
 		expect(dropdownPanel).toBeTruthy();
 		expect(dropdown.overlayVisible).toBeTruthy();
 	});
@@ -329,7 +337,7 @@ describe('Dropdown', () => {
 		inputEl.dispatchEvent(keydownEvent);
 		fixture.detectChanges();
 
-		const dropdownPanel = fixture.debugElement.query(By.css('.ui-dropdown-panel'));
+		const dropdownPanel = fixture.debugElement.query(By.css('.p-dropdown-panel'));
 		expect(dropdownPanel).toBeTruthy();
 		expect(dropdown.overlayVisible).toBeTruthy();
 		keydownEvent.which = 27;
@@ -439,6 +447,7 @@ describe('Dropdown', () => {
 
 		keydownEvent.which = 76;
 		keydownEvent.keyCode = 76;
+		keydownEvent.key = "l";
 		inputEl.dispatchEvent(keydownEvent);
 		fixture.detectChanges();
 
@@ -508,6 +517,7 @@ describe('Dropdown', () => {
 
 		keydownEvent.which = 77;
 		keydownEvent.keyCode = 77;
+		keydownEvent.key = "m";
 		keydownEvent.altKey = false;
 		inputEl.dispatchEvent(keydownEvent);
 
