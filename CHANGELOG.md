@@ -1,5 +1,76 @@
 # Changelog
 
+## [10.0.3](https://github.com/primefaces/primeng/tree/10.0.3) (2020-10-08)
+
+[Full Changelog](https://github.com/primefaces/primeng/compare/10.0.2...10.0.3)
+
+**Implemented New Features and Enhancements:**
+
+- Tooltip doesn't close in scrollable containers [\#9353](https://github.com/primefaces/primeng/issues/9353)
+
+**Fixed bugs:**
+
+- Align tiered menu behavior with menubar [\#9379](https://github.com/primefaces/primeng/issues/9379)
+- Listbox disabled visuals broken [\#9377](https://github.com/primefaces/primeng/issues/9377)
+- SplitButton menu animation not aligned with rest of the overlays [\#9376](https://github.com/primefaces/primeng/issues/9376)
+- Primeng 10 breadcrumb doesn't set p-disabled class for disabled menuitems [\#9374](https://github.com/primefaces/primeng/issues/9374)
+- Problems when typing or pasting numbers into InputNumber [\#9372](https://github.com/primefaces/primeng/issues/9372)
+-  If virtual scroll property is enabled, Tree nodes are rendering with no hierarchy even if nested/children nodes are available [\#9368](https://github.com/primefaces/primeng/issues/9368)
+- tabView: progomatically changing tabPanel disabled does not have visual affect until tabs are clicked  [\#9367](https://github.com/primefaces/primeng/issues/9367)
+- Table Keyboard metaSelections not working [\#9366](https://github.com/primefaces/primeng/issues/9366)
+- Table arrow keys not working [\#9365](https://github.com/primefaces/primeng/issues/9365)
+- InputNumber cannot set value when format property is false [\#9364](https://github.com/primefaces/primeng/issues/9364)
+- Table MetaKeySelection Demo not working with shift [\#9363](https://github.com/primefaces/primeng/issues/9363)
+- Accordion activeIndex not affecting manually opened tabs,  those tabs get in confused state. [\#9355](https://github.com/primefaces/primeng/issues/9355)
+- P-autoComplete component not showing the values in Primeng version 10.0.1 [\#9352](https://github.com/primefaces/primeng/issues/9352)
+- onDropdownClick not working on Splitbutton in PrimeNG v10 [\#9351](https://github.com/primefaces/primeng/issues/9351)
+- DialogService onclose event not fired when you click close button after v9.0.3\(include\) [\#9345](https://github.com/primefaces/primeng/issues/9345)
+- InputNumber with spinner mode throws a JS exception [\#9337](https://github.com/primefaces/primeng/issues/9337)
+- Angular PrimeNG FocusTrap Tabbing Fix Issue [\#9332](https://github.com/primefaces/primeng/issues/9332)
+- p-calendar combination \[showIcon\]="true" \[showOnFocus\]="false" produces an error on using tab-key [\#9257](https://github.com/primefaces/primeng/issues/9257)
+- Multiple DynamicDialogs are not closing programmatically [\#8801](https://github.com/primefaces/primeng/issues/8801)
+
+## [10.0.2](https://github.com/primefaces/primeng/tree/10.0.2) (2020-10-01)
+
+[Full Changelog](https://github.com/primefaces/primeng/compare/10.0.1...10.0.2)
+
+**Fixed bugs:**
+
+- Invalid falsey value in menu components [\#9349](https://github.com/primefaces/primeng/issues/9349)
+- ColumnResize not working with Table VirtualScroll [\#9347](https://github.com/primefaces/primeng/issues/9347)
+- Galleria navigator icons not showing on Bootstrap Ligh [\#9343](https://github.com/primefaces/primeng/issues/9343)
+
+## [10.0.1](https://github.com/primefaces/primeng/tree/10.0.1) (2020-09-30)
+
+[Full Changelog](https://github.com/primefaces/primeng/compare/10.0.0...10.0.1)
+
+**Implemented New Features and Enhancements:**
+
+- RTL support for Steps [\#3774](https://github.com/primefaces/primeng/issues/3774)
+- Lighter Highlight Color for PrimeOne Themes [\#9333](https://github.com/primefaces/primeng/issues/9333)
+- Improvement in behavior of components that have overlay panels in scrollable containers [\#9324](https://github.com/primefaces/primeng/issues/9324)
+- Add inputId to table radio and checkbox components [\#9225](https://github.com/primefaces/primeng/issues/9225)
+- Html support for Menu Components [\#4370](https://github.com/primefaces/primeng/issues/4370)
+- Typed TreeNode and SelectItem [\#2876](https://github.com/primefaces/primeng/issues/2876)
+
+**Fixed bugs:**
+
+- DataTable style classes documentation is wrong [\#9336](https://github.com/primefaces/primeng/issues/9336)
+- Fullcalendar button styling issues [\#9334](https://github.com/primefaces/primeng/issues/9334)
+- TabView-Accordion changes due to \*ngIf do not take place [\#9331](https://github.com/primefaces/primeng/issues/9331)
+- Alignment issue on Scrollable Datatable [\#9326](https://github.com/primefaces/primeng/issues/9326)
+- Alignment issue on Scrollable TreeTable [\#9325](https://github.com/primefaces/primeng/issues/9325)
+- TabView tab close does not work when using ripple effect with PrimeNG 10 [\#9323](https://github.com/primefaces/primeng/issues/9323)
+- Dynamic scrollHeight support for Table/Tree Virtual Scrolling [\#9322](https://github.com/primefaces/primeng/issues/9322)
+- Typo in InputNumber documentation: maxFracionDigits [\#9315](https://github.com/primefaces/primeng/issues/9315)
+- After upgrading from 9 to 10 frozen columns ceased to be synchronized with scrollable columns in case on virtual scroll [\#9294](https://github.com/primefaces/primeng/issues/9294)
+- TreeTable openCell\(\) not working [\#9279](https://github.com/primefaces/primeng/issues/9279)
+- InputNumber: css issue for ng-invalid [\#9271](https://github.com/primefaces/primeng/issues/9271)
+- Ripple not working on IE [\#9268](https://github.com/primefaces/primeng/issues/9268)
+- Dialog with Long Content does not scroll in IE11 [\#9255](https://github.com/primefaces/primeng/issues/9255)
+- VirtualScroll ExpressionChangedAfterItHasBeenCheckedError on TreeTable [\#9254](https://github.com/primefaces/primeng/issues/9254)
+- Items in PanelMenu are highlighted wrongly with Material dark themes [\#9253](https://github.com/primefaces/primeng/issues/9253)
+
 ## [10.0.0](https://github.com/primefaces/primeng/tree/10.0.0) (2020-09-07)
 
 [Full Changelog](https://github.com/primefaces/primeng/compare/10.0.0-rc.4...10.0.0)
@@ -141,6 +212,22 @@
 
 - Deprecated Features [\#9096](https://github.com/primefaces/primeng/issues/9096)
 
+## ![LTS](https://www.primefaces.org/wp-content/uploads/2020/01/lts-icon-24.png "PrimeNG LTS") [9.1.6-LTS](https://www.npmjs.com/package/primeng-lts/v/9.1.6) (2020-09-23)
+
+**Fixed bugs:**
+
+- TreeTable openCell() not working [\#9279](https://github.com/primefaces/primeng/issues/9279)
+- Turbo Table Column Resize Is Ignored If Smaller Than minWidth [expand mode] [\#8262](https://github.com/primefaces/primeng/issues/8262)
+- Frozen Columns and Rows should be exportable to CSV as well [\#7916](https://github.com/primefaces/primeng/issues/7916)
+- Table cell editor not switching correctly from input to output with OnPush [\#8046](https://github.com/primefaces/primeng/issues/8046)
+- sub menu of p-contextMenu in p-table go off screen when right click on the bottom of screen [\#8077](https://github.com/primefaces/primeng/issues/8077)
+- InputNumber: overwriting doesn't work correctly [\#9229](https://github.com/primefaces/primeng/issues/9229)
+- Add onInput event to InputNumber [\#9223](https://github.com/primefaces/primeng/issues/9223)
+- InputNumber: pasting doesn't work correctly [\#9219](https://github.com/primefaces/primeng/issues/9219)
+- inputNumber with numeric prefix is not working as expected [\#9125](https://github.com/primefaces/primeng/issues/9125)
+- p-inputNumber cannot set value bigger than 99.999 for an ES locale [\#9027](https://github.com/primefaces/primeng/issues/9027)
+- Add Del key support to InputNumber [\#8981](https://github.com/primefaces/primeng/issues/8981)
+- Inputnumber, decimal numbers [\#8900](https://github.com/primefaces/primeng/issues/8900)
 
 ## ![LTS](https://www.primefaces.org/wp-content/uploads/2020/01/lts-icon-24.png "PrimeNG LTS") [9.1.5-LTS](https://www.npmjs.com/package/primeng-lts/v/9.1.5) (2020-09-08)
 
@@ -610,6 +697,21 @@ Invalid release, use 9.1.2 instead.
 **Unit Tests:**
 
 - Angular 9 Compatibility for Unit Tests [\#8352](https://github.com/primefaces/primeng/issues/8352)
+
+## ![LTS](https://www.primefaces.org/wp-content/uploads/2020/01/lts-icon-24.png "PrimeNG LTS") [8.2.8-LTS](https://www.npmjs.com/package/primeng-lts/v/8.2.8) (2020-09-23)
+
+**Fixed bugs:**
+
+- TreeTable openCell() not working [\#9279](https://github.com/primefaces/primeng/issues/9279)
+- Turbo Table Column Resize Is Ignored If Smaller Than minWidth [expand mode] [\#8262](https://github.com/primefaces/primeng/issues/8262)
+- sub menu of p-contextMenu in p-table go off screen when right click on the bottom of screen [\#8077](https://github.com/primefaces/primeng/issues/8077)
+- Table cell editor not switching correctly from input to output with OnPush [\#8046](https://github.com/primefaces/primeng/issues/8046)
+- Frozen Columns and Rows should be exportable to CSV as well [\#8046](https://github.com/primefaces/primeng/issues/8046)
+- p-tree validateDrop throws error in subscribe [\#8827](https://github.com/primefaces/primeng/issues/8827)
+- 9.1.0 Popup slidemenu item doubleclick causes page to reload [\#8976](https://github.com/primefaces/primeng/issues/8976)
+- Filter in p-tree is not working with virtual scroll in primeng 9.1.0 [\#8941](https://github.com/primefaces/primeng/issues/8941)
+- Don't close menu components when clicking the disabled option [\#8950](https://github.com/primefaces/primeng/issues/8950)
+- Tabview: disabled tab control can be focused [\#8939](https://github.com/primefaces/primeng/issues/8939)
 
 ## ![LTS](https://www.primefaces.org/wp-content/uploads/2020/01/lts-icon-24.png "PrimeNG LTS") [8.2.7-LTS](https://www.npmjs.com/package/primeng-lts/v/8.2.7) (2020-09-08)
 
