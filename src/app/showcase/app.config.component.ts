@@ -43,7 +43,7 @@ import { Subscription } from 'rxjs';
                             </div>
                             <div class="p-col-3">
                                 <button class="p-link" (click)="changeTheme($event, 'bootstrap4-light-purple', false)">
-                                    <img src="assets/showcase/images/themes/bootstrap4-light-purple.svg" alt="Bootstrap Light Blue" />
+                                    <img src="assets/showcase/images/themes/bootstrap4-light-purple.svg" alt="Bootstrap Light Purple" />
                                 </button>
                                 <span>Purple</span>
                             </div>
@@ -55,7 +55,7 @@ import { Subscription } from 'rxjs';
                             </div>
                             <div class="p-col-3">
                                 <button class="p-link" (click)="changeTheme($event, 'bootstrap4-dark-purple', true)">
-                                    <img src="assets/showcase/images/themes/bootstrap4-dark-purple.svg" alt="Bootstrap Dark Blue" />
+                                    <img src="assets/showcase/images/themes/bootstrap4-dark-purple.svg" alt="Bootstrap Dark Purple" />
                                 </button>
                                 <span>Purple</span>
                             </div>
@@ -205,7 +205,7 @@ import { Subscription } from 'rxjs';
 
                         <h4>Premium Themes</h4>
                         <p>Premium themes are only available exclusively for <a href="https://www.primefaces.org/designer/primeng">PrimeNG Theme Designer</a> subscribers and therefore not included in PrimeNG core.</p>
-                        
+
                         <div class="p-grid free-themes">
                             <div class="p-col-3">
                                 <button class="p-link" (click)="changeTheme($event, 'soho-light', false)">
@@ -219,9 +219,33 @@ import { Subscription } from 'rxjs';
                                 </button>
                                 <span>Soho Dark</span>
                             </div>
+                            <div class="p-col-3">
+                                <button class="p-link" (click)="changeTheme($event, 'viva-light', false)">
+                                    <img src="assets/showcase/images/themes/viva-light.svg" alt="Viva Light"/>
+                                </button>
+                                <span>Viva Light</span>
+                            </div>
+                            <div class="p-col-3">
+                                <button class="p-link" (click)="changeTheme($event, 'viva-dark', true)">
+                                <img src="assets/showcase/images/themes/viva-dark.svg" alt="Viva Dark"/>
+                                </button>
+                                <span>Viva Dark</span>
+                            </div>
+                            <div class="p-col-3">
+                                <button class="p-link" (click)="changeTheme($event, 'mira', false)">
+                                    <img src="assets/showcase/images/themes/mira.jpg" alt="Mira"/>
+                                </button>
+                                <span>Mira</span>
+                            </div>
+                            <div class="p-col-3">
+                                <button class="p-link" (click)="changeTheme($event, 'nano', false)">
+                                    <img src="assets/showcase/images/themes/nano.jpg" alt="Nano"/>
+                                </button>
+                                <span>Nano</span>
+                            </div>
                         </div>
 
-                        <h4>Legacy Themes</h4>
+                        <h4>Legacy Free Themes</h4>
                         <div class="p-grid free-themes">
                             <div class="p-col-3">
                                 <button class="p-link" (click)="changeTheme($event, 'nova', false)">
@@ -278,8 +302,23 @@ import { Subscription } from 'rxjs';
                         <p>Beautifully crafted premium <a href="https://cli.angular.io/">Angular CLI</a> application templates by the PrimeTek design team.</p>
                         <div class="p-grid premium-themes">
                             <div class="p-col-12 p-md-4">
+                                <a href="https://www.primefaces.org/layouts/ultima-ng">
+                                    <img alt="Ultima" src="assets/showcase/images/layouts/ultima-ng.jpg">
+                                </a>
+                            </div>
+                            <div class="p-col-12 p-md-4">
+                                <a href="https://www.primefaces.org/layouts/freya-ng">
+                                    <img alt="Freya" src="assets/showcase/images/layouts/freya-ng.jpg">
+                                </a>
+                            </div>
+                            <div class="p-col-12 p-md-4">
+                                <a href="https://www.primefaces.org/layouts/poseidon-ng">
+                                    <img alt="Poseidon" src="assets/showcase/images/layouts/poseidon-ng.jpg">
+                                </a>
+                            </div>
+                            <div class="p-col-12 p-md-4">
                                 <a href="https://www.primefaces.org/layouts/diamond-ng">
-                                    <img alt="Mirage" src="assets/showcase/images/layouts/diamond-ng.png">
+                                    <img alt="Diamond" src="assets/showcase/images/layouts/diamond-ng.jpg">
                                 </a>
                             </div>
                             <div class="p-col-12 p-md-4">
@@ -358,11 +397,6 @@ import { Subscription } from 'rxjs';
                                 </a>
                             </div>
                             <div class="p-col-12 p-md-4">
-                                <a href="https://www.primefaces.org/layouts/ultima-ng">
-                                    <img alt="Ultima" src="assets/showcase/images/layouts/ultima-ng.jpg">
-                                </a>
-                            </div>
-                            <div class="p-col-12 p-md-4">
                                 <a href="https://www.primefaces.org/layouts/barcelona-ng">
                                     <img alt="Barcelona" src="assets/showcase/images/layouts/barcelona-ng.jpg">
                                 </a>
@@ -375,11 +409,6 @@ import { Subscription } from 'rxjs';
                             <div class="p-col-12 p-md-4">
                                 <a href="https://www.primefaces.org/layouts/atlantis-ng">
                                     <img alt="Atlantis" src="assets/showcase/images/layouts/atlantis-ng.jpg">
-                                </a>
-                            </div>
-                            <div class="p-col-12 p-md-4">
-                                <a href="https://www.primefaces.org/layouts/poseidon-ng">
-                                    <img alt="Poseidon" src="assets/showcase/images/layouts/poseidon-ng.jpg">
                                 </a>
                             </div>
                             <div class="p-col-12 p-md-4">
@@ -399,7 +428,7 @@ export class AppConfigComponent implements OnInit, OnDestroy {
     active: boolean;
 
     scale: number = 14;;
-    
+
     scales: number[] = [12,13,14,15,16];
 
     outsideClickListener: any;
@@ -412,7 +441,15 @@ export class AppConfigComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.config = this.configService.config;
-        this.subscription = this.configService.configUpdate$.subscribe(config => this.config = config);
+        this.subscription = this.configService.configUpdate$.subscribe(config => {
+            this.config = config;
+            if (this.config.theme === 'nano')
+                this.scale = 12;
+            else
+                this.scale = 14;
+
+            this.applyScale();
+        });
 
         this.router.events.subscribe(event => {
             if (event instanceof NavigationEnd) {
@@ -472,11 +509,15 @@ export class AppConfigComponent implements OnInit, OnDestroy {
 
     decrementScale() {
         this.scale--;
-        document.documentElement.style.fontSize = this.scale + 'px';
+        this.applyScale();
     }
 
     incrementScale() {
         this.scale++;
+        this.applyScale();
+    }
+
+    applyScale() {
         document.documentElement.style.fontSize = this.scale + 'px';
     }
 
@@ -485,5 +526,5 @@ export class AppConfigComponent implements OnInit, OnDestroy {
             this.subscription.unsubscribe();
         }
     }
-    
+
 }

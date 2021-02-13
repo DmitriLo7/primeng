@@ -1,4 +1,4 @@
-import {NgModule,Component,ElementRef,AfterContentInit,Input,Output,ViewChild,EventEmitter,ContentChild,ContentChildren,QueryList,TemplateRef,ChangeDetectionStrategy,OnChanges,SimpleChanges, ViewEncapsulation, ChangeDetectorRef} from '@angular/core';
+import {NgModule,Component,ElementRef,AfterContentInit,Input,Output,ViewChild,EventEmitter,ContentChild,ContentChildren,QueryList,TemplateRef,ChangeDetectionStrategy, ViewEncapsulation} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {Header,Footer,PrimeTemplate,SharedModule} from 'primeng/api';
 import {ScrollingModule,CdkVirtualScrollViewport} from '@angular/cdk/scrolling';
@@ -14,7 +14,7 @@ import {BlockableUI} from 'primeng/api';
             </div>
             <div #content class="p-virtualscroller-content">
                 <div class="p-virtualscroller-list">
-                    <cdk-virtual-scroll-viewport #viewport [ngStyle]="{'height': scrollHeight}" [itemSize]="itemSize" [minBufferPx]="minBufferPx" [maxBufferPx]="maxBufferPx" (scrolledIndexChange)="onScrollIndexChange($event)">
+                    <cdk-virtual-scroll-viewport #viewport [ngStyle]="{'height': scrollHeight}" tabindex="0" [itemSize]="itemSize" [minBufferPx]="minBufferPx" [maxBufferPx]="maxBufferPx" (scrolledIndexChange)="onScrollIndexChange($event)">
                         <ng-container *cdkVirtualFor="let item of value; trackBy: trackBy; let i = index; let c = count; let f = first; let l = last; let e = even; let o = odd;">
                             <div [ngStyle]="{'height': itemSize + 'px'}" class="p-virtualscroller-item">
                                 <ng-container *ngTemplateOutlet="item ? itemTemplate : loadingItemTemplate; context: {$implicit: item, index: i, count: c, first: f, last: l, even: e, odd: o}"></ng-container>
@@ -30,9 +30,10 @@ import {BlockableUI} from 'primeng/api';
         </div>
     `,
     changeDetection: ChangeDetectionStrategy.Default,
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    styleUrls: ['./virtualscroller.css']
 })
-export class VirtualScroller implements AfterContentInit,BlockableUI,OnChanges {
+export class VirtualScroller implements AfterContentInit,BlockableUI {
 
     @Input() value: any[];
 
@@ -51,6 +52,8 @@ export class VirtualScroller implements AfterContentInit,BlockableUI,OnChanges {
     @Input() minBufferPx: number;
 
     @Input() maxBufferPx: number;
+
+    @Input() delay: number = 250;
   
     @Input() trackBy: Function = (index: number, item: any) => item;
                 
@@ -78,9 +81,11 @@ export class VirtualScroller implements AfterContentInit,BlockableUI,OnChanges {
 
     _first: number = 0;
 
-    loadedPages: number[] = [];
-
     _cache: boolean;
+
+    virtualScrollTimeout: any;
+
+    virtualPage: number;
 
     constructor(public el: ElementRef) {}
 
@@ -136,29 +141,20 @@ export class VirtualScroller implements AfterContentInit,BlockableUI,OnChanges {
 
     onScrollIndexChange(index: number) {
         if (this.lazy) {
-            let pageRange = this.createPageRange(Math.floor(index / this.rows));
-            pageRange.forEach(page => this.loadPage(page));
-        }
-    }
+            if (this.virtualScrollTimeout) {
+                clearTimeout(this.virtualScrollTimeout);
+            }
 
-    createPageRange(page: number) {
-        let range: number[] = [];
-
-        if (page !== 0) {
-            range.push(page - 1);
-        }
-        range.push(page);
-        if (page !== (Math.ceil(this.value.length / this.rows) - 1)) {
-            range.push(page + 1);
-        }
-
-        return range;
-    }
-
-    loadPage(page: number) {
-        if (!this.loadedPages.includes(page)) {
-            this.onLazyLoad.emit({first: this.rows * page, rows: this.rows});
-            this.loadedPages.push(page);
+            this.virtualScrollTimeout = setTimeout(() => {
+                let page = Math.floor(index / this.rows);
+                let virtualScrollOffset = page === 0 ? 0 : (page - 1) * this.rows;
+                let virtualScrollChunkSize = page === 0 ? this.rows * 2 : this.rows * 3;
+  
+                if (page !== this.virtualPage) {
+                    this.virtualPage = page;
+                    this.onLazyLoad.emit({first: virtualScrollOffset, rows: virtualScrollChunkSize});
+                }
+            }, this.delay);
         }
     }
 
@@ -174,18 +170,6 @@ export class VirtualScroller implements AfterContentInit,BlockableUI,OnChanges {
     scrollToIndex(index: number, mode?: ScrollBehavior): void {
         if (this.viewport) {
             this.viewport.scrollToIndex(index, mode);
-        }
-    }
-
-    clearCache() {
-        this.loadedPages = [];
-    }
-
-    ngOnChanges(simpleChange: SimpleChanges) {
-        if (simpleChange.value) {
-            if (!this.lazy) {
-                this.clearCache();
-            }
         }
     }
 }

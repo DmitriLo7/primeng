@@ -22,18 +22,12 @@ let idx: number = 0;
     `
 })
 export class TabPanel implements AfterContentInit,OnDestroy {
-
-    @Input() header: string;
     
     @Input() closable: boolean;
     
     @Input() headerStyle: any;
     
     @Input() headerStyleClass: string;
-    
-    @Input() leftIcon: string;
-    
-    @Input() rightIcon: string;
     
     @Input() cache: boolean = true;
 
@@ -54,6 +48,12 @@ export class TabPanel implements AfterContentInit,OnDestroy {
     _selected: boolean;
 
     _disabled: boolean;
+    
+    _header: string;
+
+    _leftIcon: string;
+
+    _rightIcon: string;
     
     loaded: boolean;
     
@@ -98,7 +98,8 @@ export class TabPanel implements AfterContentInit,OnDestroy {
             this.cd.detectChanges();
         }
 
-        this.loaded = true;
+        if (val)
+            this.loaded = true;
     }
 
     @Input() get disabled(): boolean {
@@ -107,6 +108,33 @@ export class TabPanel implements AfterContentInit,OnDestroy {
 
     set disabled(disabled: boolean) {
         this._disabled = disabled;
+        this.tabView.cd.markForCheck();
+    }
+    
+    @Input() get header(): string {
+        return this._header;
+    }
+    
+    set header(header: string) {
+        this._header = header;
+        this.tabView.cd.markForCheck();
+    }
+
+    @Input() get leftIcon(): string {
+        return this._leftIcon;
+    }
+
+    set leftIcon(leftIcon :string) {
+        this._leftIcon = leftIcon;
+        this.tabView.cd.markForCheck();
+    }
+
+    @Input() get rightIcon(): string {
+        return this._rightIcon;
+    }
+
+    set rightIcon(rightIcon :string) {
+        this._rightIcon = rightIcon;
         this.tabView.cd.markForCheck();
     }
     

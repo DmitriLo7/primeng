@@ -48,8 +48,8 @@
         <h5>Form Layout</h5>
         <div class="p-field p-fluid">
             <label for="username">Username</label>
-            <input id="username" type="username" aria-describedby="username-help" class="p-invalid" pInputText />
-            <small id="username-help" class="p-invalid">Username is not available.</small>
+            <input id="username" type="username" aria-describedby="username-help" class="ng-invalid ng-dirty" pInputText />
+            <small id="username-help" class="p-error">Username is not available.</small>
         </div>
     </div>    
 </div>
@@ -456,8 +456,8 @@ import &#123;MessageService&#125; from 'primeng/api';
 &lt;h5&gt;Form Layout&lt;/h5&gt;
 &lt;div class="p-field p-fluid"&gt;
     &lt;label for="username"&gt;Username&lt;/label&gt;
-    &lt;input id="username" type="username" aria-describedby="username-help" class="p-invalid" pInputText /&gt;
-    &lt;small id="username-help" class="p-invalid"&gt;Username is not available.&lt;/small&gt;
+    &lt;input id="username" type="username" aria-describedby="username-help" class="ng-invalid ng-dirty" pInputText /&gt;
+    &lt;small id="username-help" class="p-error"&gt;Username is not available.&lt;/small&gt;
 &lt;/div&gt;
 </app-code>
 
@@ -472,17 +472,18 @@ import &#123;MessageService&#125; from 'primeng/api';
     export class MessagesDemo implements OnInit &#123;
     
         msgs1: Message[];
-    
+
         msgs2: Message[];
         
         constructor(private messageService: MessageService) &#123;&#125;
-    
+
         ngOnInit() &#123;
             this.msgs1 = [
                 &#123;severity:'success', summary:'Success', detail:'Message Content'&#125;,
                 &#123;severity:'info', summary:'Info', detail:'Message Content'&#125;,
                 &#123;severity:'warn', summary:'Warning', detail:'Message Content'&#125;,
-                &#123;severity:'error', summary:'Error', detail:'Message Content'&#125;
+                &#123;severity:'error', summary:'Error', detail:'Message Content'&#125;,
+                &#123;severity:'custom', summary:'Custom', detail:'Message Content', icon: 'pi-file'&#125;
             ];
         &#125;
         
@@ -494,15 +495,28 @@ import &#123;MessageService&#125; from 'primeng/api';
                 &#123;severity:'error', summary:'Error', detail:'Message Content'&#125;
             ];
         &#125;
-    
+
         clearMessages() &#123;
             this.msgs2 = [];
         &#125;
-    
+
         showViaService() &#123;
             this.messageService.add(&#123;severity:'success', summary:'Service Message', detail:'Via MessageService'&#125;);
         &#125;
     &#125;
+</app-code>
+
+<app-code lang="css" ngNonBindable ngPreserveWhitespaces>
+:host ::ng-deep .p-message-custom &#123;
+    background-color: #E1CFE7;
+    border: solid #8A427A;
+    border-width: 0 0 0 6px;
+    color: #2c1e30;
+&#125;
+
+:host ::ng-deep .p-message-close-icon &#123;
+    color: #2c1e30;
+&#125;
 </app-code>
         </p-tabPanel>
         <p-tabPanel header="StackBlitz">

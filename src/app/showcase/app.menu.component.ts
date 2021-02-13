@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Router } from '@angular/router';
+import { FilterService } from 'primeng/api';
 
 declare let gtag: Function;
 
@@ -8,10 +9,15 @@ declare let gtag: Function;
     selector: 'app-menu',
     template: `
         <div class="layout-sidebar" [ngClass]="{'active': active}">
+            <div class="layout-sidebar-filter p-fluid p-input-filled">
+                <p-autoComplete [group]="true" [(ngModel)]="selectedRoute" [minLength]="2" [suggestions]="filteredRoutes" scrollHeight="300px" (onSelect)="onSelect($event)" placeholder="Search by name..." (completeMethod)="filterGroupedRoute($event)" field="label">
+                </p-autoComplete>
+            </div>
             <div class="layout-menu">
                 <div class="menu-category">General</div>
                 <div class="menu-items">
                     <a [routerLink]=" ['/setup']" routerLinkActive="router-link-exact-active">Get Started</a>
+                    <a [routerLink]=" ['/i18n']" routerLinkActive="router-link-exact-active">I18N</a>
                     <a href="https://github.com/primefaces/primeng/wiki/Migration-Guide" target="_blank">Migration Guide</a>
                     <a href="https://github.com/primefaces/primeng" target="_blank">Source Code</a>
                     <a href="https://www.primefaces.org/store">Store</a>
@@ -19,7 +25,8 @@ declare let gtag: Function;
 
                 <div class="menu-category">Support</div>
                 <div class="menu-items">
-                    <a href="https://forum.primefaces.org/viewforum.php?f=35" target="_blank">Community Forum</a>
+                    <a href="https://forum.primefaces.org/viewforum.php?f=35" target="_blank">Forum</a>
+                    <a href="https://discord.gg/gzKFYnpmCY" target="_blank">Discord Chat</a>
                     <a [routerLink]=" ['/lts']" routerLinkActive="router-link-exact-active">Long Term Support</a>
                     <a [routerLink]=" ['/support']" routerLinkActive="router-link-exact-active">PRO Support</a>
                 </div>
@@ -29,7 +36,7 @@ declare let gtag: Function;
                     <a [routerLink]=" ['/theming']" routerLinkActive="router-link-exact-active">Guide</a>
                     <a href="https://www.primefaces.org/designer/primeng">Theme Designer</a>
                     <a href="https://www.primefaces.org/designer-ng">Visual Editor</a>
-                    <a href="https://www.primefaces.org/designer/api/primeng/10.0.0">SASS API</a>
+                    <a href="https://www.primefaces.org/designer/api/primeng/11.1.0">SASS API</a>
                 </div>
 
                 <div class="menu-category">PrimeFlex</div>
@@ -46,25 +53,28 @@ declare let gtag: Function;
 
                 <div class="menu-category">PrimeIcons</div>
                 <div class="menu-items">
-                    <a [routerLink]=" ['/icons']" routerLinkActive="router-link-exact-active">Icons v4.0</a>
+                    <a [routerLink]=" ['/icons']" routerLinkActive="router-link-exact-active">Icons v4.1</a>
                 </div>
 
                 <div class="menu-category">Form</div>
                 <div class="menu-items">
                     <a [routerLink]=" ['/autocomplete']" routerLinkActive="router-link-exact-active">AutoComplete</a>
                     <a [routerLink]=" ['/calendar']" routerLinkActive="router-link-exact-active">Calendar</a>
+                    <a [routerLink]=" ['/cascadeselect']" routerLinkActive="router-link-exact-active">CascadeSelect <span class="p-tag">New</span></a>
                     <a [routerLink]=" ['/checkbox']" routerLinkActive="router-link-exact-active">Checkbox</a>
                     <a [routerLink]=" ['/chips']" routerLinkActive="router-link-exact-active">Chips</a>
                     <a [routerLink]=" ['/colorpicker']" routerLinkActive="router-link-exact-active">ColorPicker</a>
                     <a [routerLink]=" ['/dropdown']" routerLinkActive="router-link-exact-active">Dropdown</a>
                     <a [routerLink]=" ['/editor']" routerLinkActive="router-link-exact-active">Editor</a>
+                    <a [routerLink]=" ['/floatlabel']" routerLinkActive="router-link-exact-active">FloatLabel</a>
                     <a [routerLink]=" ['/inputgroup']" routerLinkActive="router-link-exact-active">InputGroup</a>
                     <a [routerLink]=" ['/inputmask']" routerLinkActive="router-link-exact-active">InputMask</a>
                     <a [routerLink]=" ['/inputswitch']" routerLinkActive="router-link-exact-active">InputSwitch</a>
                     <a [routerLink]=" ['/inputtext']" routerLinkActive="router-link-exact-active">InputText</a>
                     <a [routerLink]=" ['/inputtextarea']" routerLinkActive="router-link-exact-active">InputTextArea</a>
                     <a [routerLink]=" ['/inputnumber']" routerLinkActive="router-link-exact-active">InputNumber</a>
-                    <a [routerLink]=" ['/floatlabel']" routerLinkActive="router-link-exact-active">FloatLabel</a>
+                    <a [routerLink]=" ['/invalid']" routerLinkActive="router-link-exact-active">InvalidState <span class="p-tag">New</span></a>
+                    <a [routerLink]=" ['/knob']" routerLinkActive="router-link-exact-active">Knob <span class="p-tag">New</span></a>
                     <a [routerLink]=" ['/keyfilter']" routerLinkActive="router-link-exact-active">KeyFilter</a>
                     <a [routerLink]=" ['/listbox']" routerLinkActive="router-link-exact-active">Listbox</a>
                     <a [routerLink]=" ['/multiselect']" routerLinkActive="router-link-exact-active">MultiSelect</a>
@@ -93,7 +103,7 @@ declare let gtag: Function;
                     <a [routerLink]=" ['/paginator']" routerLinkActive="router-link-exact-active">Paginator</a>
                     <a [routerLink]=" ['/picklist']" routerLinkActive="router-link-exact-active">PickList</a>
                     <div>
-                        <a tabindex="0" (click)="toggleSubmenu($event, '/table')">Table</a>
+                        <a tabindex="0" (click)="toggleSubmenu($event, '/table')">Table <span class="p-tag">New</span></a>
                         <div [@submenu]="isSubmenuActive('/table') ? 'visible': 'hidden'">
                             <ul>
                                 <li><a [routerLink]=" ['/table']" routerLinkActive="router-link-exact-active" [routerLinkActiveOptions]="{exact:true}">Documentation</a></li>
@@ -106,7 +116,7 @@ declare let gtag: Function;
                                 <li><a [routerLink]=" ['/table/colgroup']" routerLinkActive="router-link-exact-active" [routerLinkActiveOptions]="{exact:true}">ColGroup</a></li>
                                 <li><a [routerLink]=" ['/table/page']" routerLinkActive="router-link-exact-active" [routerLinkActiveOptions]="{exact:true}">Page</a></li>
                                 <li><a [routerLink]=" ['/table/sort']" routerLinkActive="router-link-exact-active" [routerLinkActiveOptions]="{exact:true}">Sort</a></li>
-                                <li><a [routerLink]=" ['/table/filter']" routerLinkActive="router-link-exact-active" [routerLinkActiveOptions]="{exact:true}">Filter</a></li>
+                                <li><a [routerLink]=" ['/table/filter']" routerLinkActive="router-link-exact-active" [routerLinkActiveOptions]="{exact:true}">Filter  <span class="p-tag">New</span></a></li>
                                 <li><a [routerLink]=" ['/table/selection']" routerLinkActive="router-link-exact-active" [routerLinkActiveOptions]="{exact:true}">Selection</a></li>
                                 <li><a [routerLink]=" ['/table/lazy']" routerLinkActive="router-link-exact-active" [routerLinkActiveOptions]="{exact:true}">Lazy</a></li>
                                 <li><a [routerLink]=" ['/table/scroll']" routerLinkActive="router-link-exact-active" [routerLinkActiveOptions]="{exact:true}">Scroll</a></li>
@@ -128,6 +138,8 @@ declare let gtag: Function;
                             </ul>
                         </div>
                     </div>
+
+                    <a [routerLink]=" ['/timeline']" routerLinkActive="router-link-exact-active">Timeline <span class="p-tag">New</span></a>
 
                     <div>
                         <a tabindex="0" (click)="toggleSubmenu($event, '/tree')">Tree</a>
@@ -178,8 +190,10 @@ declare let gtag: Function;
                 <div class="menu-items">
                     <a [routerLink]=" ['/accordion']" routerLinkActive="router-link-exact-active">Accordion</a>
                     <a [routerLink]=" ['/card']" routerLinkActive="router-link-exact-active">Card</a>
+                    <a [routerLink]=" ['/divider']" routerLinkActive="router-link-exact-active">Divider <span class="p-tag">New</span></a>
                     <a [routerLink]=" ['/fieldset']" routerLinkActive="router-link-exact-active">Fieldset</a>
                     <a [routerLink]=" ['/panel']" routerLinkActive="router-link-exact-active">Panel</a>
+                    <a [routerLink]=" ['/splitter']" routerLinkActive="router-link-exact-active">Splitter <span class="p-tag">New</span></a>
                     <a [routerLink]=" ['/scrollpanel']" routerLinkActive="router-link-exact-active">ScrollPanel</a>
                     <a [routerLink]=" ['/tabview']" routerLinkActive="router-link-exact-active">TabView</a>
                     <a [routerLink]=" ['/toolbar']" routerLinkActive="router-link-exact-active">Toolbar</a>
@@ -188,6 +202,7 @@ declare let gtag: Function;
                 <div class="menu-category">Overlay</div>
                 <div class="menu-items">
                     <a [routerLink]=" ['/confirmdialog']" routerLinkActive="router-link-exact-active">ConfirmDialog</a>
+                    <a [routerLink]=" ['/confirmpopup']" routerLinkActive="router-link-exact-active">ConfirmPopup <span class="p-tag">New</span></a>
                     <a [routerLink]=" ['/dialog']" routerLinkActive="router-link-exact-active">Dialog</a>
                     <a [routerLink]=" ['/dynamicdialog']" routerLinkActive="router-link-exact-active">DynamicDialog</a>
                     <a [routerLink]=" ['/overlaypanel']" routerLinkActive="router-link-exact-active">OverlayPanel</a>
@@ -261,17 +276,30 @@ declare let gtag: Function;
                 
                 <div class="menu-category">Misc</div>
                 <div class="menu-items">
+                    <a [routerLink]=" ['/avatar']" routerLinkActive="router-link-exact-active">Avatar <span class="p-tag">New</span></a>
+                    <a [routerLink]=" ['/badge']" routerLinkActive="router-link-exact-active">Badge <span class="p-tag">New</span></a>
                     <a [routerLink]=" ['/blockui']" routerLinkActive="router-link-exact-active">BlockUI</a>
-                    <a [routerLink]=" ['/badge']" routerLinkActive="router-link-exact-active">Badge</a>
                     <a [routerLink]=" ['/captcha']" routerLinkActive="router-link-exact-active">Captcha</a>
-                    <a [routerLink]=" ['/defer']" routerLinkActive="router-link-exact-active">Defer</a>
-                    <a [routerLink]=" ['/filterutils']" routerLinkActive="router-link-exact-active">FilterUtils</a>
-                    <a [routerLink]=" ['/focustrap']" routerLinkActive="router-link-exact-active">FocusTrap</a>
+                    <a [routerLink]=" ['/chip']" routerLinkActive="router-link-exact-active">Chip <span class="p-tag">New</span></a>
                     <a [routerLink]=" ['/inplace']" routerLinkActive="router-link-exact-active">Inplace</a>
                     <a [routerLink]=" ['/progressbar']" routerLinkActive="router-link-exact-active">ProgressBar</a>
                     <a [routerLink]=" ['/progressspinner']" routerLinkActive="router-link-exact-active">ProgressSpinner</a>
-                    <a [routerLink]=" ['/ripple']" routerLinkActive="router-link-exact-active">Ripple</a>
+                    <a [routerLink]=" ['/scrolltop']" routerLinkActive="router-link-exact-active">ScrollTop <span class="p-tag">New</span></a>
+                    <a [routerLink]=" ['/skeleton']" routerLinkActive="router-link-exact-active">Skeleton <span class="p-tag">New</span></a>
+                    <a [routerLink]=" ['/tag']" routerLinkActive="router-link-exact-active">Tag <span class="p-tag">Tag</span></a>
                     <a [routerLink]=" ['/terminal']" routerLinkActive="router-link-exact-active">Terminal</a>
+                </div>
+
+                <div class="menu-category">Directives</div>
+                <div class="menu-items">
+                    <a [routerLink]=" ['/defer']" routerLinkActive="router-link-exact-active">Defer</a>
+                    <a [routerLink]=" ['/focustrap']" routerLinkActive="router-link-exact-active">FocusTrap</a>
+                    <a [routerLink]=" ['/ripple']" routerLinkActive="router-link-exact-active">Ripple</a>
+                </div>
+
+                <div class="menu-category">Utilities</div>
+                <div class="menu-items">
+                    <a [routerLink]=" ['/filterservice']" routerLinkActive="router-link-exact-active">FilterService <span class="p-tag">New</span></a>
                 </div>
             </div>
         </div>
@@ -291,13 +319,344 @@ declare let gtag: Function;
         ])
     ]
 })
-export class AppMenuComponent {
+export class AppMenuComponent implements OnInit {
 
     @Input() active: boolean;
 
     activeSubmenus: {[key: string]: boolean} = {};
 
-    constructor(private router: Router) {}
+    constructor(private router: Router, private filterService: FilterService) {}
+
+    filteredRoutes: any[];
+
+    selectedRoute: any;
+
+    routes = [
+        {
+            label: 'General', value: 'general', 
+            items: [
+                {label: 'Setup', value: '/setup'},
+                {label: 'I18N', value: '/i18n'}
+            ]
+        },
+        {
+            label: 'Support', value: 'support', 
+            items: [
+                {label: 'Long Term Support', value: '/lts'},
+                {label: 'PRO Support', value: '/support'}
+            ]
+        },
+        {
+            label: 'Theming', value: 'theming', 
+            items: [
+                {label: 'Guide', value: '/theming'}
+            ]
+        },
+        {
+            label: 'PrimeFlex', value: 'primeflex', 
+            items: [
+                {label: 'Setup', value: '/primeflex'},
+                {label: 'Display', value: '/primeflex/display'},
+                {label: 'Elevation', value: '/primeflex/elevation'},
+                {label: 'FlexBox', value: '/primeflex/flexbox'},
+                {label: 'Form Layout', value: '/primeflex/formlayout'},
+                {label: 'Spacing', value: '/primeflex/spacing'},
+                {label: 'Text', value: '/primeflex/text'}
+            ]
+        },
+        {
+            label: 'PrimeIcons', value: 'primeicons', 
+            items: [
+                {label: 'Icons v4.1', value: '/icons'}
+            ]
+        },
+        {
+            label: 'Form', value: 'form', 
+            items: [
+                {label: 'AutoComplete', value: '/autocomplete'},
+                {label: 'Calendar', value: '/calendar'},
+                {label: 'CascadeSelect', value: '/cascadeselect'},
+                {label: 'Checkbox', value: '/checkbox'},
+                {label: 'Chips', value: '/chips'},
+                {label: 'ColorPicker', value: '/colorpicker'},
+                {label: 'Dropdown', value: '/dropdown'},
+                {label: 'Editor', value: '/editor'},
+                {label: 'FloatLabel', value: '/floatlabel'},
+                {label: 'InputGroup', value: '/inputgroup'},
+                {label: 'InputMask', value: '/inputmask'},
+                {label: 'InputSwitch', value: '/inputswitch'},
+                {label: 'InputText', value: '/inputtext'},
+                {label: 'InputTextArea', value: '/inputtextarea'},
+                {label: 'InvalidState', value: '/invalid'},
+                {label: 'Knob', value: '/knob'},
+                {label: 'KeyFilter', value: '/keyfilter'},
+                {label: 'Listbox', value: '/listbox'},
+                {label: 'MultiSelect', value: '/multiselect'},
+                {label: 'Password', value: '/password'},
+                {label: 'RadioButton', value: '/radiobutton'},
+                {label: 'Rating', value: '/rating'},
+                {label: 'Slider', value: '/slider'},
+                {label: 'SelectButton', value: '/selectbutton'},
+                {label: 'ToggleButton', value: '/togglebutton'},
+                {label: 'TriCheckbox', value: '/tristatecheckbox'}
+            ]
+        },
+        {
+            label: 'Button', value: 'button', 
+            items: [
+                {label: 'Button', value: '/button'},
+                {label: 'SplitButton', value: '/splitbutton'}
+            ]
+        },
+        {
+            label: 'Data', value: 'data', 
+            items: [
+                {label: 'DataView', value: '/dataview'},
+                {label: 'FullCalendar', value: '/fullcalendar'},
+                {label: 'GMap', value: '/gmap'},
+                {label: 'OrderList', value: '/orderlist'},
+                {label: 'Org Chart', value: '/organizationchart'},
+                {label: 'Paginator', value: '/paginator'},
+                {label: 'PickList', value: '/picklist'},
+                {label: 'Timeline', value: '/timeline'},
+                {label: 'VirtualScroller', value: '/virtualscroller'},
+            ]
+        },
+
+        {
+            label: 'Table', value: 'table', 
+            items: [
+                {label: 'Documentation', value: '/table'},
+                {label: 'Basic', value: '/table/basic'},
+                {label: 'Dynamic', value: '/table/dynamic'},
+                {label: 'Templating', value: '/table/templating'},
+                {label: 'Size', value: '/table/size'},
+                {label: 'Gridlines', value: '/table/gridlines'},
+                {label: 'Striped', value: '/table/striped'},
+                {label: 'ColGroup', value: '/table/colgroup'},
+                {label: 'Page', value: '/table/page'},
+                {label: 'Sort', value: '/table/sort'},
+                {label: 'Filter', value: '/table/filter'},
+                {label: 'Selection', value: '/table/selection'},
+                {label: 'Scroll', value: '/table/scroll'},
+                {label: 'VirtualScroll', value: '/table/virtualscroll'},
+                {label: 'FlexScroll', value: '/table/flexscroll'},
+                {label: 'RowExpand', value: '/table/rowexpansion'},
+                {label: 'Edit', value: '/table/edit'},
+                {label: 'Toggle', value: '/table/coltoggle'},
+                {label: 'Resize', value: '/table/colresize'},
+                {label: 'Reorder', value: '/table/reorder'},
+                {label: 'RowGroup', value: '/table/rowgroup'},
+                {label: 'ContextMenu', value: '/table/contextmenu'},
+                {label: 'Responsive', value: '/table/responsive'},
+                {label: 'Export', value: '/table/export'},
+                {label: 'State', value: '/table/state'},
+                {label: 'Style', value: '/table/style'},
+                {label: 'Sticky', value: '/table/sticky'},
+                {label: 'Crud', value: '/table/crud'},
+            ]
+        },
+        {
+            label: 'Tree', value: 'tree', 
+            items: [
+                {label: 'Documentation', value: '/tree'},
+                {label: 'Templating', value: '/tree/templating'},
+                {label: 'Selection', value: '/tree/selection'},
+                {label: 'Filter', value: '/tree/filter'},
+                {label: 'Lazy', value: '/tree/lazy'},
+                {label: 'Scroll', value: '/tree/scroll'},
+                {label: 'ContextMenu', value: '/tree/contextmenu'},
+                {label: 'DragDrop', value: '/tree/dragdrop'},
+                {label: 'Horizontal', value: '/tree/horizontal'}
+            ]
+        },
+        {
+            label: 'TreeTable', value: 'treetable', 
+            items: [
+                {label: 'Documentation', value: '/treetable'},
+                {label: 'Templating', value: '/treetable/templating'},
+                {label: 'Page', value: '/treetable/page'},
+                {label: 'Sort', value: '/treetable/sort'},
+                {label: 'Selection', value: '/treetable/selection'},
+                {label: 'ColGroup', value: '/treetable/colgroup'},
+                {label: 'Lazy', value: '/treetable/lazy'},
+                {label: 'Edit', value: '/treetable/edit'},
+                {label: 'Scroll', value: '/treetable/scroll'},
+                {label: 'Resize', value: '/treetable/colresize'},
+                {label: 'Reorder', value: '/treetable/reorder'},
+                {label: 'Toggle', value: '/treetable/coltoggle'},
+                {label: 'Style', value: '/treetable/style'},
+                {label: 'ContextMenu', value: '/treetable/contextmenu'},
+                {label: 'Responsive', value: '/treetable/responsive'},
+                {label: 'Filter', value: '/treetable/filter'},
+                {label: 'Size', value: '/treetable/size'}
+            ]
+        },
+        {
+            label: 'Panel', value: 'panel', 
+            items: [
+                {label: 'Accordion', value: '/accordion'},
+                {label: 'Card', value: '/card'},
+                {label: 'Divider', value: '/divider'},
+                {label: 'Fieldset', value: '/fieldset'},
+                {label: 'Panel', value: '/panel'},
+                {label: 'Splitter', value: '/splitter'},
+                {label: 'ScrollPanel', value: '/scrollpanel'},
+                {label: 'TabView', value: '/tabview'},
+                {label: 'Toolbar', value: '/toolbar'}
+            ]
+        },
+        {
+            label: 'Overlay', value: 'overlay', 
+            items: [
+                {label: 'ConfirmDialog', value: '/confirmdialog'},
+                {label: 'ConfirmPopup', value: '/confirmpopup'},
+                {label: 'Dialog', value: '/dialog'},
+                {label: 'DynamicDialog', value: '/dynamicdialog'},
+                {label: 'Panel', value: '/panel'},
+                {label: 'OverlayPanel', value: '/overlaypanel'},
+                {label: 'Sidebar', value: '/sidebar'},
+                {label: 'Tooltip', value: '/tooltip'}
+            ]
+        },
+        {
+            label: 'File', value: 'fileupload', 
+            items: [
+                {label: 'Upload', value: '/fileupload'}
+            ]
+        },
+        {
+            label: 'Overlay', value: 'overlay', 
+            items: [
+                {label: 'ConfirmDialog', value: '/confirmdialog'},
+                {label: 'ConfirmPopup', value: '/confirmpopup'},
+                {label: 'Dialog', value: '/dialog'},
+                {label: 'DynamicDialog', value: '/dynamicdialog'},
+                {label: 'Panel', value: '/panel'},
+                {label: 'OverlayPanel', value: '/overlaypanel'},
+                {label: 'Sidebar', value: '/sidebar'},
+                {label: 'Tooltip', value: '/tooltip'}
+            ]
+        },
+        {
+            label: 'Menu', value: 'menu', 
+            items: [
+                {label: 'MenuModel', value: '/menumodel'},
+                {label: 'Breadcrumb', value: '/breadcrumb'},
+                {label: 'ContextMenu', value: '/contextmenu'},
+                {label: 'MegaMenu', value: '/megamenu'},
+                {label: 'Menu', value: '/menu'},
+                {label: 'Menubar', value: '/menubar'},
+                {label: 'PanelMenu', value: '/panelmenu'},
+                {label: 'SlideMenu', value: '/slidemenu'},
+                {label: 'Steps', value: '/steps'},
+                {label: 'TabMenu', value: '/tabmenu'},
+                {label: 'TieredMenu', value: '/tieredmenu'}
+            ]
+        },
+        {
+            label: 'Chart', value: 'chart', 
+            items: [
+                {label: 'ChartModel', value: '/chart'},
+                {label: 'Bar', value: '/chart/bar'},
+                {label: 'Doughnut', value: '/chart/doughnut'},
+                {label: 'Line', value: '/chart/line'},
+                {label: 'PolarArea', value: '/chart/polararea'},
+                {label: 'Pie', value: '/chart/pie'},
+                {label: 'Radar', value: '/chart/radar'}
+            ]
+        },
+        {
+            label: 'Messages', value: 'messages', 
+            items: [
+                {label: 'Messages', value: '/messages'},
+                {label: 'Toast', value: '/toast'}
+            ]
+        },
+        {
+            label: 'Media', value: 'media', 
+            items: [
+                {label: 'Carousel', value: '/carousel'}
+            ]
+        },
+        {
+            label: 'Galleria', value: 'galleria', 
+            items: [
+                {label: 'Documentation', value: '/galleria'},
+                {label: 'Programmatic', value: '/galleria/programmatic'},
+                {label: 'Indicator', value: '/galleria/indicator'},
+                {label: 'Thumbnail', value: '/galleria/thumbnail'},
+                {label: 'Navigator', value: '/galleria/navigator'},
+                {label: 'Responsive', value: '/galleria/responsive'},
+                {label: 'Fullscreen', value: '/galleria/fullscreen'},
+                {label: 'AutoPlay', value: '/galleria/autoplay'},
+                {label: 'Caption', value: '/galleria/caption'},
+                {label: 'Advanced', value: '/galleria/advanced'}
+            ]
+        },
+        {
+            label: 'DragDrop', value: 'dragdrop', 
+            items: [
+                {label: 'DragDrop', value: '/dragdrop'}
+            ]
+        },
+        {
+            label: 'Misc', value: 'misc', 
+            items: [
+                {label: 'Avatar', value: '/avatar'},
+                {label: 'Badge', value: '/badge'},
+                {label: 'BlockUI', value: '/blockui'},
+                {label: 'Captcha', value: '/captcha'},
+                {label: 'Chip', value: '/chip'},
+                {label: 'Inplace', value: '/inplace'},
+                {label: 'ProgressBar', value: '/progressbar'},
+                {label: 'ProgressSpinner', value: '/progressspinner'},
+                {label: 'Skeleton', value: '/skeleton'},
+                {label: 'Tag', value: '/tag'},
+                {label: 'Terminal', value: '/terminal'}
+            ]
+        },
+        {
+            label: 'Directives', value: 'directives', 
+            items: [
+                {label: 'Defer', value: '/defer'},
+                {label: 'FocusTrap', value: '/focustrap'},
+                {label: 'Ripple', value: '/ripple'}
+            ]
+        },
+        {
+            label: 'Utilities', value: 'utilities', 
+            items: [
+                {label: 'FilterService', value: '/filterservice'}
+            ]
+        },
+    ];
+
+    ngOnInit() {
+    }
+
+    filterGroupedRoute(event) {
+        let query = event.query;
+        let filteredGroups = [];
+
+        for (let optgroup of this.routes) {
+            let filteredSubOptions = this.filterService.filter(optgroup.items, ['value'], query, "contains");
+            if (filteredSubOptions && filteredSubOptions.length) {
+                filteredGroups.push({
+                    label: optgroup.label,
+                    value: optgroup.value,
+                    items: filteredSubOptions
+                });
+            }
+        }
+
+        this.filteredRoutes = filteredGroups;
+    }
+
+    onSelect(event) {
+        this.selectedRoute = null;
+        this.router.navigate([event.value]);
+    }
 
     toggleSubmenu(event: Event, name: string) {
         this.activeSubmenus[name] = this.activeSubmenus[name] ? false: true;
